@@ -36,7 +36,7 @@ namespace inventorychecker
 
             if (args.Parameters.Count != 1 && args.Parameters.Count != 2)
             {
-                Player.SendErrorMessage("Invalid syntax. Proper syntax: /inventorycheck <type> <player>");
+                Player.SendErrorMessage("Invalid syntax. Proper syntax: /inventorycheck <player> <type>");
                 return;
             }
             if (args.Parameters.Count == 0)
