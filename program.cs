@@ -33,7 +33,6 @@ namespace inventorychecker
         public void InventoryView(CommandArgs args)
         {
             TSPlayer Player = args.Player;
-
             if (args.Parameters.Count != 1 && args.Parameters.Count != 2)
             {
                 Player.SendErrorMessage("Invalid syntax. Proper syntax: /inventorycheck <player> <type>");
@@ -84,9 +83,12 @@ namespace inventorychecker
                             {
                                 if (i == 20 || i == 30 || i == 40 || i == 50)
                                 {
-                                    list2 = list2 + "[i/s" + targetplayer.TPlayer.inventory[i].stack + ":" + targetplayer.TPlayer.inventory[i].netID + "]|\n|";
+                                    list2 = list2 + "\n[i/s" + targetplayer.TPlayer.inventory[i].stack + ":" + targetplayer.TPlayer.inventory[i].netID + "]|";
                                 }
-                                list2 = list2 + "[i/s" + targetplayer.TPlayer.inventory[i].stack + ":" + targetplayer.TPlayer.inventory[i].netID + "]|";
+                                else
+                                {
+                                    list2 = list2 + "[i/s" + targetplayer.TPlayer.inventory[i].stack + ":" + targetplayer.TPlayer.inventory[i].netID + "]|";
+                                }
                             }
                         }
                         Player.SendMessage($"[ {targetplayer.Name} ] inventory\n\nHotbar:\n{list1}\ninventory:\n{list2}\ntrashed:\n[i/s{Player.TPlayer.trashItem.stack}:{Player.TPlayer.trashItem.netID}]", Color.Gray);
