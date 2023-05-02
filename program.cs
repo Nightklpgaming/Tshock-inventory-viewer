@@ -16,7 +16,7 @@ namespace inventorychecker
 
         public override string Description => "just some simple code so you dont to do it yourself";
 
-        public override string Name => "Invetory viewer";
+        public override string Name => "Inventory viewer";
 
         public override Version Version => new Version(1, 0, 0, 0);
 
