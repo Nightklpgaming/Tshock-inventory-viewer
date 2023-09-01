@@ -9,8 +9,8 @@
       "inventoryviewers/1.0.0": {
         "dependencies": {
           "OTAPI.Upcoming": "3.1.20",
-          "TSAPI": "5.1.3",
-          "TShock": "5.1.3"
+          "TSAPI": "5.2.0",
+          "TShock": "5.2.0"
         },
         "runtime": {
           "inventoryviewers.dll": {}
@@ -835,7 +835,7 @@
           }
         }
       },
-      "TSAPI/5.1.3": {
+      "TSAPI/5.2.0": {
         "dependencies": {
           "Newtonsoft.Json": "13.0.1",
           "OTAPI.Upcoming": "3.1.20",
@@ -843,23 +843,23 @@
         },
         "runtime": {
           "lib/net6.0/TerrariaServer.dll": {
-            "assemblyVersion": "5.1.3.0",
-            "fileVersion": "5.1.3.0"
+            "assemblyVersion": "5.2.0.0",
+            "fileVersion": "5.2.0.0"
           }
         }
       },
-      "TShock/5.1.3": {
+      "TShock/5.2.0": {
         "dependencies": {
           "BCrypt.Net-Next": "4.0.3",
           "GetText.NET": "1.7.14",
           "Microsoft.Data.Sqlite": "6.0.11",
           "MySql.Data": "8.0.31",
-          "TSAPI": "5.1.3"
+          "TSAPI": "5.2.0"
         },
         "runtime": {
           "lib/net6.0/TShockAPI.dll": {
-            "assemblyVersion": "5.1.3.0",
-            "fileVersion": "5.1.3.0"
+            "assemblyVersion": "5.2.0.0",
+            "fileVersion": "5.2.0.0"
           }
         }
       }
@@ -1382,19 +1382,19 @@
       "path": "system.windows.extensions/6.0.0",
       "hashPath": "system.windows.extensions.6.0.0.nupkg.sha512"
     },
-    "TSAPI/5.1.3": {
+    "TSAPI/5.2.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-jo8yljYPrPGtW3zRi3Koza9FAbmZXGOqMFBF4jzCYly5sy6X+E5Ul4mah2XnVqkrCao9ZSTinnQjl1qEZMniNg==",
-      "path": "tsapi/5.1.3",
-      "hashPath": "tsapi.5.1.3.nupkg.sha512"
+      "sha512": "sha512-Efl/r4pzsVlVGhPj/7Z+IbV+wqQpK4DdPh/M6TAFOwPf/dXPAt6KHvfwiuyvqbRT9nh7CiHvciCPZqe+jq4vhA==",
+      "path": "tsapi/5.2.0",
+      "hashPath": "tsapi.5.2.0.nupkg.sha512"
     },
-    "TShock/5.1.3": {
+    "TShock/5.2.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-4Nu2JjKitcAtTmDT/vqpP6t92vmp+MDli0VsCMWttyEI8Ty6eQYKp5tOW5TKBrxpGRF1A9hNClFr/zDfdMF1jw==",
-      "path": "tshock/5.1.3",
-      "hashPath": "tshock.5.1.3.nupkg.sha512"
+      "sha512": "sha512-dS6dxpP7kyoqoelc8QywljvG939MBH5i7VkCqwS33W8lVur+OfvAlpjm6sxPQt6x9BRi8GTOWXZ5124GieIanQ==",
+      "path": "tshock/5.2.0",
+      "hashPath": "tshock.5.2.0.nupkg.sha512"
     }
   }
 }

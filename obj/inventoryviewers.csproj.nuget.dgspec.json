@@ -46,11 +46,11 @@
             },
             "TSAPI": {
               "target": "Package",
-              "version": "[5.1.3, )"
+              "version": "[5.2.0, )"
             },
             "TShock": {
               "target": "Package",
-              "version": "[5.1.3, )"
+              "version": "[5.2.0, )"
             }
           },
           "imports": [
@@ -69,7 +69,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.302\\RuntimeIdentifierGraph.json"
         }
       }
     }
