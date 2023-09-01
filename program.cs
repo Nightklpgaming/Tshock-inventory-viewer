@@ -18,7 +18,7 @@ namespace inventoryviewers
 
         public override string Name => "Inventory viewer";
 
-        public override Version Version => new Version(1, 0, 0, 1);
+        public override Version Version => new Version(1, 0, 0, 2);
 
         public inventoryviewers(Main game) : base(game)
         {
