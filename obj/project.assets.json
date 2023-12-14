@@ -4134,11 +4134,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\nightklp\\my_Terraria_Plugins\\inventoryviewers\\inventoryviewers\\inventoryviewers.csproj",
-      "projectName": "inventoryviewers",
-      "projectPath": "D:\\nightklp\\my_Terraria_Plugins\\inventoryviewers\\inventoryviewers\\inventoryviewers.csproj",
+      "projectUniqueName": "D:\\my_Terraria_Plugins\\InventoryViewer\\InventoryViewer\\InventoryViewer.csproj",
+      "projectName": "InventoryViewer",
+      "projectPath": "D:\\my_Terraria_Plugins\\InventoryViewer\\InventoryViewer\\InventoryViewer.csproj",
       "packagesPath": "C:\\Users\\xrayr\\.nuget\\packages\\",
-      "outputPath": "D:\\nightklp\\my_Terraria_Plugins\\inventoryviewers\\inventoryviewers\\obj\\",
+      "outputPath": "D:\\my_Terraria_Plugins\\InventoryViewer\\InventoryViewer\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\xrayr\\AppData\\Roaming\\NuGet\\NuGet.Config",

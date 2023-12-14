@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "LI8X5+4yGHWsr1n7daZMUlG69IwubTz9Z6PgJYvY/3GOQ33NaSH542+rmaaB+ZBR4TKHKU7fCYw7cp3OSiPWKg==",
+  "dgSpecHash": "LQNef0RKFAIxc5TGBXxaXPU4BLJPkx3L7OLNjCmZI9QYo8TAuTCHKoDZ3+WrVt+5yJGBkH7Bau4IsQKNk42HPw==",
   "success": true,
-  "projectFilePath": "D:\\nightklp\\my_Terraria_Plugins\\inventoryviewers\\inventoryviewers\\inventoryviewers.csproj",
+  "projectFilePath": "D:\\my_Terraria_Plugins\\InventoryViewer\\InventoryViewer\\InventoryViewer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\xrayr\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\xrayr\\.nuget\\packages\\gettext.net\\1.7.14\\gettext.net.1.7.14.nupkg.sha512",
