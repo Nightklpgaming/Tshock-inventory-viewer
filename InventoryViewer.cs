@@ -6,26 +6,21 @@ using TShockAPI;
 using Terraria;
 using TerrariaApi.Server;
 using Microsoft.Xna.Framework;
-using Mono.CompilerServices.SymbolWriter;
-using Google.Protobuf.WellKnownTypes;
-using Org.BouncyCastle.Asn1.CryptoPro;
-using Org.BouncyCastle.Asn1.X509;
-using System.Diagnostics;
 
 namespace InventoryViewer
 {
     [ApiVersion(2, 1)]
     public class InventoryViewer : TerrariaPlugin
     {
-        public override string Author => "nightklp";
+        public override string Author => "Nightklp";
         public override string Description => "just a simple plugin that view an inventory of a specific player...";
-        public override string Name => "Inventory viewer";
-        public override Version Version => new Version(1, 0, 0, 3);
+        public override string Name => "Inventory Viewer";
+        public override Version Version => new Version(1, 0, 0, 5);
 
 
         public static Dictionary<string, string> tracktarget = new Dictionary<string, string>();
 
-        public static string StatusTitle = "[c/f4d100:[][c/f4d100:inventoryViewer][c/f4d100:]]";
+        public static string StatusTitle = "[c/f4d100:[][c/f4d100:Inv. Viewer][c/f4d100:]]";
 
         public InventoryViewer(Main game) : base(game)
         {
@@ -39,14 +34,26 @@ namespace InventoryViewer
             ServerApi.Hooks.GameUpdate.Register(this, OnUpdate);
 
 
-            Commands.ChatCommands.Add(new Command("inventoryviewer.view", InventoryView, "inventoryview", "invview", "viewinv", "inview")
+            Commands.ChatCommands.Add(new Command("inventoryviewer.view", InventoryView, "inventoryview", "invview", "inview")
             {
                 HelpText = "View inventory contents of a players\ndo [ /inventoryview help ] for more info"
             });
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                ServerApi.Hooks.ServerLeave.Deregister(this, OnServerLeave);
+
+                ServerApi.Hooks.GameUpdate.Deregister(this, OnUpdate);
+            }
+            base.Dispose(disposing);
+        }
+
         private void OnServerLeave(LeaveEventArgs args)
         {
+            #region code
             foreach (var value in tracktarget)
             {
                 var gettracker = TSPlayer.FindByNameOrID(value.Value);
@@ -59,13 +66,15 @@ namespace InventoryViewer
                 else if (Main.player[args.Who].name == value.Key)
                 {
                     tracktarget.Remove(value.Key);
-                    tracker.SendMessage($"{StatusTitle} player named {Main.player[args.Who].name} left...", Color.Orange);
+                    tracker.SendMessage($"{StatusTitle} player named {Main.player[args.Who].name} has left...", Color.Orange);
                 }
             }
+            #endregion
         }
 
         private void OnUpdate(EventArgs args)
         {
+            #region code
             foreach (var value in tracktarget)
             {
                 var gettracker = TSPlayer.FindByNameOrID(value.Value);
@@ -77,6 +86,7 @@ namespace InventoryViewer
                 getpreviousInv(target, tracker);
                 
             }
+            #endregion
         }
 
         public void InventoryView(CommandArgs args)
@@ -84,39 +94,35 @@ namespace InventoryViewer
             TSPlayer Player = args.Player;
             if (args.Parameters.Count != 1 && args.Parameters.Count != 2)
             {
-                Player.SendErrorMessage("Invalid syntax. Proper syntax: /inventoryview <player> <type>\ndo [ /inventoryview help ] for more info");
+                Player.SendErrorMessage("Invalid syntax. Proper syntax: /inventoryview <player> <type>\nDo [ /inventoryview help ] for more info");
                 return;
             }
 
             if (args.Parameters.Count == 0)
             {
-                args.Player.SendErrorMessage("Specify a Player!\ndo [ /inventoryview help ] for more info");
+                args.Player.SendErrorMessage("Specify a Player!\nDo [ /inventoryview help ] for more info");
                 return;
             }
 
-            string helptext = "You can view player contents using this command\n" +
+            //help text
+            string helptext = "[i:3619] [c/00f412:Inventory Viewer Info] [i:3619]" +
+                    "\nYou can view player contents using this command\n" +
                     $"Example: /inventoryview [c/abff96:{Player.Name}] [c/96ffdc:inv] (View inventory contents)\n" +
-                    "[c/0000f4:List of type]\n" +
-                    "[c/85f400:main]\n" +
-                    "[c/f4f400:inventory,inv]\ninfo: shows the player's backpack\n\n" +
-                    "[c/f4f400:equipment,equip]\ninfo: shows the player's accessories/armor/loadouts/misc and etc...\n\n" +
-                    "[c/85f400:secondary:]\n" +
-                    "[c/f4f400:piggybank,piggy,pig]\ninfo: shows the player's piggy bank\n\n" +
-                    "[c/f4f400:safe]\ninfo: shows the player's safe\n\n" +
-                    "[c/f4f400:defenderforge,forge]\ninfo: shows the player's defender's forge\n\n" +
-                    "[c/f4f400:voidvault,void,vault]\ninfo: shows the player's void vault\n\n" +
-                    "[c/85f400:others]\n" +
-                    "[c/f4f400:all]\ninfo: shows All contents of a players... \n[c/f40000:warning: this can flood your chat message]\n\n" +
-                    "[c/f4f400:track]\ninfo: get logged when a player inventory changes... \nturnoff: to turn it off repeat the command again\n[c/f40000:warning: this can flood your chat message]";
+                    "[c/a4ff4e:[List of Types][c/a4ff4e:]]\n" +
+                    "[c/ffffff:'inventory/inv'] [c/71b45a:'equipment/equip'] [c/f268ff:'piggy/pig'] [c/6f6f6f:'safe'] [c/e3fa00:'defenderforge/forge'] [c/c600fa:'voidvault/vault'] [c/fa2b00:'all']" +
+                    "\n------------------------------" +
+                    "\n[c/fab200:about 'track' type]\ninfo: get logged when a player inventory changes... \nturnoff: to turn it off repeat the command again\n[c/f40000:warning: this can flood your chat message]" +
+                    "\n------------------------------";
 
             if (args.Parameters[0] == "help")
             {
                 Player.SendMessage(helptext, Color.WhiteSmoke);
+                return;
             }
 
             if (args.Parameters.Count == 1)
             {
-                args.Player.SendErrorMessage("Specify a type!\ndo [ /inventoryview help ] for more info");
+                args.Player.SendErrorMessage("Specify a type!\nDo [ /inventoryview help ] for more info");
                 return;
             }
 
@@ -130,7 +136,7 @@ namespace InventoryViewer
             var targetplayer = foundPlr[0];
             string targetplayername = targetplayer.Name;
 
-            //makes a variable to check if this player is loggen in or not ( usefull to avoid false ban )
+            //makes a variable to check if this player is logged in or not ( usefull to avoid false ban )
             string targetplayerlogin = "[c/5c5c5c:status: ][c/f40000:This player hasn't been logged in!]";
             if (targetplayer.IsLoggedIn)
             {
@@ -231,7 +237,7 @@ namespace InventoryViewer
                     }
                 default:
                     {
-                        Player.SendErrorMessage("Invalid type!");
+                        Player.SendErrorMessage("Invalid type!\nDo [ /inventoryview help ] for more info");
                         return;
                     }
 
@@ -248,9 +254,9 @@ namespace InventoryViewer
         /// <param name="executer"></param>
         /// <param name="target"></param>
         /// <param name="type"></param>
-        private InventoryString GetInventory(TSPlayer executer, TSPlayer target, string type)
+        public InventoryString GetInventory(TSPlayer executer, TSPlayer target, string type)
         {
-            InventoryString get = new InventoryString(null, null, null, null, null, null);
+            InventoryString get = new InventoryString("|", "|", "|", "|", "|", "|");
 
             if (executer.RealPlayer)
             {
@@ -274,7 +280,7 @@ namespace InventoryViewer
                             get.Inventory += $"[i{sp}:{target.TPlayer.inventory[i].netID}]|";
                         }
                     }
-                    get.Inventory += $"\n[i/s{target.TPlayer.trashItem.stack}:{target.TPlayer.trashItem.netID}]";
+                    get.Inventory += $"\n[ [i/s{target.TPlayer.trashItem.stack}:{target.TPlayer.trashItem.netID}] ]";
                 }
                 #endregion
 
@@ -298,14 +304,14 @@ namespace InventoryViewer
                         {
                             loadoutused += $"|[i/s{target.TPlayer.dye[i + 3].stack}:{target.TPlayer.dye[i + 3].netID}]|[i/s{target.TPlayer.armor[ii + 3].stack}:{target.TPlayer.armor[ii + 3].netID}]|[i/s{target.TPlayer.armor[i + 3].stack}:{target.TPlayer.armor[i + 3].netID}]|====|[i/s{target.TPlayer.dye[i].stack}:{target.TPlayer.dye[i].netID}]|[i/s{target.TPlayer.armor[ii].stack}:{target.TPlayer.armor[ii].netID}]|[i/s{target.TPlayer.armor[i].stack}:{target.TPlayer.armor[i].netID}]|\n";
                         }
-                        if (i >= 6 && i <= 8)
+                        if (i >= 6 && i <= 9)
                         {
                             loadoutused += $"|[i/s{target.TPlayer.dye[i].stack}:{target.TPlayer.dye[i].netID}]|[i/s{target.TPlayer.armor[ii].stack}:{target.TPlayer.armor[ii].netID}]|[i/s{target.TPlayer.armor[i].stack}:{target.TPlayer.armor[i].netID}]|\n";
                         }
                     }
                     for (int il = 0; il < 3; il++)
                     {
-                        string loadoutget = $"loadout {il}:";
+                        string loadoutget = $"loadout {il + 1}:";
                         for (int i = 0; i < 10; i++)
                         {
                             int ii = i + 10;
@@ -313,7 +319,7 @@ namespace InventoryViewer
                             {
                                 loadoutget += $"|[i/s{target.TPlayer.Loadouts[il].Dye[i + 3].stack}:{target.TPlayer.Loadouts[il].Dye[i + 3].netID}]|[i/s{target.TPlayer.Loadouts[il].Armor[ii + 3].stack}:{target.TPlayer.Loadouts[il].Armor[ii + 3].netID}]|[i/s{target.TPlayer.Loadouts[il].Armor[i + 3].stack}:{target.TPlayer.Loadouts[il].Armor[i + 3].netID}]|====|[i/s{target.TPlayer.Loadouts[il].Dye[i].stack}:{target.TPlayer.Loadouts[il].Dye[i].netID}]|[i/s{target.TPlayer.Loadouts[il].Armor[ii].stack}:{target.TPlayer.Loadouts[il].Armor[ii].netID}]|[i/s{target.TPlayer.Loadouts[il].Armor[i].stack}:{target.TPlayer.Loadouts[il].Armor[i].netID}]|\n";
                             }
-                            if (i >= 6 && i <= 8)
+                            if (i >= 6 && i <= 9)
                             {
                                 loadoutget += $"|[i/s{target.TPlayer.Loadouts[il].Dye[i].stack}:{target.TPlayer.Loadouts[il].Dye[i].netID}]|[i/s{target.TPlayer.Loadouts[il].Armor[ii].stack}:{target.TPlayer.Loadouts[il].Armor[ii].netID}]|[i/s{target.TPlayer.Loadouts[il].Armor[i].stack}:{target.TPlayer.Loadouts[il].Armor[i].netID}]|\n";
                             }
@@ -360,12 +366,12 @@ namespace InventoryViewer
 
                         if (i == d2)
                         {
-                            get.PiggyBank += $"\n|[i/s{sp}:{target.TPlayer.bank.item[i].netID}]|";
+                            get.PiggyBank += $"\n|[i{sp}:{target.TPlayer.bank.item[i].netID}]|";
                             d2 += 10;
                         }
                         else
                         {
-                            get.PiggyBank += $"[i/s{sp}:{target.TPlayer.bank.item[i].netID}]|";
+                            get.PiggyBank += $"[i{sp}:{target.TPlayer.bank.item[i].netID}]|";
                         }
                     }
                 }
@@ -384,12 +390,12 @@ namespace InventoryViewer
 
                         if (i == d2)
                         {
-                            get.Safe += $"\n|[i/s{sp}:{target.TPlayer.bank2.item[i].netID}]|";
+                            get.Safe += $"\n|[i{sp}:{target.TPlayer.bank2.item[i].netID}]|";
                             d2 += 10;
                         }
                         else
                         {
-                            get.Safe += $"[i/s{sp}:{target.TPlayer.bank2.item[i].netID}]|";
+                            get.Safe += $"[i{sp}:{target.TPlayer.bank2.item[i].netID}]|";
                         }
                     }
                 }
@@ -408,12 +414,12 @@ namespace InventoryViewer
 
                         if (i == d2)
                         {
-                            get.DefenderForge += $"\n|[i/s{sp}:{target.TPlayer.bank3.item[i].netID}]|";
+                            get.DefenderForge += $"\n|[i{sp}:{target.TPlayer.bank3.item[i].netID}]|";
                             d2 += 10;
                         }
                         else
                         {
-                            get.DefenderForge += $"[i/s{sp}:{target.TPlayer.bank3.item[i].netID}]|";
+                            get.DefenderForge += $"[i{sp}:{target.TPlayer.bank3.item[i].netID}]|";
                         }
                     }
                 }
@@ -432,16 +438,23 @@ namespace InventoryViewer
 
                         if (i == d2)
                         {
-                            get.VoidVault += $"\n|[i/s{sp}:{target.TPlayer.bank4.item[i].netID}]|";
+                            get.VoidVault += $"\n|[i{sp}:{target.TPlayer.bank4.item[i].netID}]|";
                             d2 += 10;
                         }
                         else
                         {
-                            get.VoidVault += $"[i/s{sp}:{target.TPlayer.bank4.item[i].netID}]|";
+                            get.VoidVault += $"[i{sp}:{target.TPlayer.bank4.item[i].netID}]|";
                         }
                     }
                 }
                 #endregion
+
+                get.Inventory = get.Inventory.Replace("[i/s0:0]", "   ");
+                get.Equipment = get.Equipment.Replace("[i/s0:0]", "   ");
+                get.PiggyBank = get.PiggyBank.Replace("[i/s0:0]", "   ");
+                get.Safe = get.Safe.Replace("[i/s0:0]", "   ");
+                get.DefenderForge = get.DefenderForge.Replace("[i/s0:0]", "   ");
+                get.VoidVault = get.VoidVault.Replace("[i/s0:0]", "   ");
             }
             else
             {
@@ -483,7 +496,7 @@ namespace InventoryViewer
                             get.Inventory += $"[{p} {target.TPlayer.inventory[i].Name} {s}]|";
                         }
                     }
-                    get.Inventory += $"\n[ {target.TPlayer.trashItem.stack} ({target.TPlayer.trashItem.stack}) ]";
+                    get.Inventory += $"\n[ {prefixlist[target.TPlayer.trashItem.prefix]} {target.TPlayer.trashItem.Name} ({target.TPlayer.trashItem.stack}) ]";
                 }
                 #endregion
 
@@ -508,7 +521,7 @@ namespace InventoryViewer
                         {
                             loadoutused += $"|[{target.TPlayer.dye[i + 3].Name}]|[{prefixlist[target.TPlayer.armor[ii + 3].prefix]} {target.TPlayer.armor[ii + 3].Name}]|[{prefixlist[target.TPlayer.armor[i + 3].prefix]} {target.TPlayer.armor[i + 3].Name} ]|====|[ {target.TPlayer.dye[i].Name} ]|[ {target.TPlayer.armor[ii].Name} ]|[ {target.TPlayer.armor[i].Name} ]|\n";
                         }
-                        if (i >= 6 && i <= 8)
+                        if (i >= 6 && i <= 9)
                         {
                             loadoutused += $"|[ {target.TPlayer.dye[i].Name} ]|[ {prefixlist[target.TPlayer.armor[ii].prefix]} {target.TPlayer.armor[ii].Name} ]|[ {prefixlist[target.TPlayer.armor[i].prefix]} {target.TPlayer.armor[i].Name} ]|\n";
                         }
@@ -523,7 +536,7 @@ namespace InventoryViewer
                             {
                                 loadoutget += $"|[ {target.TPlayer.Loadouts[il].Dye[i + 3].Name} ]|[ {prefixlist[target.TPlayer.Loadouts[il].Armor[ii + 3].prefix]} {target.TPlayer.Loadouts[il].Armor[ii + 3].Name} ]|[ {prefixlist[target.TPlayer.Loadouts[il].Armor[i + 3].prefix]} {target.TPlayer.Loadouts[il].Armor[i + 3].Name}]|====|[ {target.TPlayer.Loadouts[il].Dye[i].Name}]|[ {target.TPlayer.Loadouts[il].Armor[ii].Name} ]|[ {target.TPlayer.Loadouts[il].Armor[i].Name} ]|\n";
                             }
-                            if (i >= 6 && i <= 8)
+                            if (i >= 6 && i <= 9)
                             {
                                 loadoutget += $"|[ {target.TPlayer.Loadouts[il].Dye[i].Name} ]|[ {prefixlist[target.TPlayer.Loadouts[il].Armor[ii].prefix]} {target.TPlayer.Loadouts[il].Armor[ii].Name} ]|[ {prefixlist[target.TPlayer.Loadouts[il].Armor[i].prefix]} {target.TPlayer.Loadouts[il].Armor[i].Name}]|\n";
                             }
@@ -573,12 +586,12 @@ namespace InventoryViewer
 
                         if (i == d2)
                         {
-                            get.Inventory += $"\n|[{p} {target.TPlayer.bank.item[i].Name} {s}]|";
+                            get.PiggyBank += $"\n|[{p} {target.TPlayer.bank.item[i].Name} {s}]|";
                             d2 += 10;
                         }
                         else
                         {
-                            get.Inventory += $"[{p}{target.TPlayer.bank.item[i].Name} {s}]|";
+                            get.PiggyBank += $"[{p}{target.TPlayer.bank.item[i].Name} {s}]|";
                         }
                     }
                 }
@@ -600,12 +613,12 @@ namespace InventoryViewer
 
                         if (i == d2)
                         {
-                            get.Inventory += $"\n|[{p} {target.TPlayer.bank2.item[i].Name} {s}]|";
+                            get.Safe += $"\n|[{p} {target.TPlayer.bank2.item[i].Name} {s}]|";
                             d2 += 10;
                         }
                         else
                         {
-                            get.Inventory += $"[{p}{target.TPlayer.bank2.item[i].Name} {s}]|";
+                            get.Safe += $"[{p}{target.TPlayer.bank2.item[i].Name} {s}]|";
                         }
                     }
                 }
@@ -627,12 +640,12 @@ namespace InventoryViewer
 
                         if (i == d2)
                         {
-                            get.Inventory += $"\n|[{p} {target.TPlayer.bank3.item[i].Name} {s}]|";
+                            get.DefenderForge += $"\n|[{p} {target.TPlayer.bank3.item[i].Name} {s}]|";
                             d2 += 10;
                         }
                         else
                         {
-                            get.Inventory += $"[{p}{target.TPlayer.bank3.item[i].Name} {s}]|";
+                            get.DefenderForge += $"[{p}{target.TPlayer.bank3.item[i].Name} {s}]|";
                         }
                     }
                 }
@@ -654,12 +667,12 @@ namespace InventoryViewer
 
                         if (i == d2)
                         {
-                            get.Inventory += $"\n|[{p} {target.TPlayer.bank4.item[i].Name} {s}]|";
+                            get.VoidVault += $"\n|[{p} {target.TPlayer.bank4.item[i].Name} {s}]|";
                             d2 += 10;
                         }
                         else
                         {
-                            get.Inventory += $"[{p}{target.TPlayer.bank4.item[i].Name} {s}]|";
+                            get.VoidVault += $"[{p}{target.TPlayer.bank4.item[i].Name} {s}]|";
                         }
                     }
                 }
@@ -789,20 +802,11 @@ namespace InventoryViewer
             
         }
         #endregion
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                ServerApi.Hooks.ServerLeave.Deregister(this, OnServerLeave);
-
-                ServerApi.Hooks.GameUpdate.Deregister(this, OnUpdate);
-            }
-            base.Dispose(disposing);
-        }
+        
     }
 
     #region OBJECTS
-    class InventoryString
+    public class InventoryString
     {
         public string Inventory;
         public string Equipment;
